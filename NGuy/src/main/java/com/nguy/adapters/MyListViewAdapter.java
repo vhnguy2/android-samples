@@ -16,7 +16,7 @@ public class MyListViewAdapter extends BaseAdapter {
   private final Context mContext;
   private final DisplayMetrics mDisplayMetrics;
   private List<String> mData;
-  private int mPreviouslyRenderedPosition = -1;
+  private int mPreviouslyAnimatedPosition = -1;
 
   public MyListViewAdapter(Context context, DisplayMetrics displayMetrics) {
     mData = new ArrayList<String>();
@@ -48,7 +48,8 @@ public class MyListViewAdapter extends BaseAdapter {
   public View getView(int position, View convertView, ViewGroup parent) {
     if (convertView != null) {
       ((TextView) convertView).setText((String) getItem(position));
-      if (shouldAnimate(position)) {
+      if (mPreviouslyAnimatedPosition < position) {
+        mPreviouslyAnimatedPosition = position;
         TranslateAnimation animation = new TranslateAnimation(mDisplayMetrics.widthPixels / 2, 0, 0, 0);
         animation.setDuration(300);
         convertView.startAnimation(animation);
@@ -62,12 +63,4 @@ public class MyListViewAdapter extends BaseAdapter {
     return convertView;
   }
 
-  private boolean shouldAnimate(int currentPosition) {
-    if (mPreviouslyRenderedPosition < currentPosition) {
-      mPreviouslyRenderedPosition = currentPosition;
-      return true;
-    }
-
-    return false;
-  }
 }
