@@ -8,6 +8,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyListViewAdapter extends BaseAdapter {
@@ -15,14 +16,16 @@ public class MyListViewAdapter extends BaseAdapter {
   private final Context mContext;
   private final DisplayMetrics mDisplayMetrics;
   private List<String> mData;
+  private int mPreviouslyRenderedPosition = -1;
 
   public MyListViewAdapter(Context context, DisplayMetrics displayMetrics) {
+    mData = new ArrayList<String>();
     mContext = context;
     mDisplayMetrics = displayMetrics;
   }
 
-  public void setData(List<String> data) {
-    this.mData = data;
+  public void addData(List<String> data) {
+    mData.addAll(data);
     notifyDataSetChanged();
   }
 
@@ -45,15 +48,26 @@ public class MyListViewAdapter extends BaseAdapter {
   public View getView(int position, View convertView, ViewGroup parent) {
     if (convertView != null) {
       ((TextView) convertView).setText((String) getItem(position));
+      if (shouldAnimate(position)) {
+        TranslateAnimation animation = new TranslateAnimation(mDisplayMetrics.widthPixels / 2, 0, 0, 0);
+        animation.setDuration(300);
+        convertView.startAnimation(animation);
+      }
     } else {
       TextView textView = new TextView(mContext);
       textView.setText((String) getItem(position));
       convertView = textView;
     }
-    TranslateAnimation animation = new TranslateAnimation(mDisplayMetrics.widthPixels / 2, 0, 0, 0);
-    animation.setDuration(300);
-    convertView.startAnimation(animation);
 
     return convertView;
+  }
+
+  private boolean shouldAnimate(int currentPosition) {
+    if (mPreviouslyRenderedPosition < currentPosition) {
+      mPreviouslyRenderedPosition = currentPosition;
+      return true;
+    }
+
+    return false;
   }
 }
