@@ -17,7 +17,6 @@ public class ListActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.activity_list);
 
     mListView = (ListView) findViewById(R.id.listview);
@@ -38,4 +37,5 @@ public class ListActivity extends Activity {
     }
     mAdapter.setData(data);
   }
+
 }
